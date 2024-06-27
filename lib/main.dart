@@ -1,4 +1,6 @@
+import 'package:algebra_calculator/main_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,9 +11,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Calculator(title: 'Calculator App'),
+    return MultiProvider(
+        providers:[
+          ChangeNotifierProvider(create: (context) => MainModel())
+        ],
+        child: const MaterialApp(
+        home: Calculator(title: "Calculator App"),
+        )
     );
+
   }
 }
 
@@ -35,16 +43,34 @@ class _CalculatorState extends State<Calculator> {
       appBar: AppBar(
         title: const Text("Calculator"),
       ),
-      body: const Center(
+      body:  Center(
 
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Welcome"),
-          Text("Welcome"),
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Welcome"),
+            TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.numbers),
+                labelText: "Enter REPEAT a number",
+              ),
+              onChanged: (value) => {
+                context.read<MainModel>().counter = int.parse(value)
+              },
+            ),
+            ElevatedButton(onPressed: () { context.read<MainModel>().halfNumberOperation(); }
+            , child: Icon(Icons.calculate)),
 
-        ],
-      )
+            Text("Answer: ${context.watch<MainModel>().halfNumber.toString()}"),
+
+
+
+          ],
+                ),
+        )
       )
     );
   }
